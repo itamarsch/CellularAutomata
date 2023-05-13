@@ -25,6 +25,12 @@ source-repository head
 
 library
   exposed-modules:
+      CellularAutomata
+      CellularAutomata.BriansBrain
+      CellularAutomata.GameOfLife
+      CellularAutomata.Seeds
+      Drawing
+      Grid
       Lib
   other-modules:
       Paths_CellularAutomata
@@ -33,7 +39,9 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
+    , containers
     , gloss
+    , ilist
   default-language: Haskell2010
 
 executable CellularAutomata-exe
@@ -46,7 +54,9 @@ executable CellularAutomata-exe
   build-depends:
       CellularAutomata
     , base >=4.7 && <5
+    , containers
     , gloss
+    , ilist
   default-language: Haskell2010
 
 test-suite CellularAutomata-test
@@ -60,5 +70,7 @@ test-suite CellularAutomata-test
   build-depends:
       CellularAutomata
     , base >=4.7 && <5
+    , containers
     , gloss
+    , ilist
   default-language: Haskell2010
