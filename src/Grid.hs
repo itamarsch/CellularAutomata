@@ -1,4 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Grid (nextGrid, countNeighbors, Grid, State (..)) where
 
@@ -14,10 +15,21 @@ data State a = State
     getGrid :: Grid a
   }
 
-nextGrid :: (CellularAutomata a, Ord a) => State a -> State a
+enumerate2d :: forall a. [[a]] -> [[((Int, Int), a)]]
+enumerate2d grid =
+  let enumerated1d :: [(Int, [a])]
+      enumerated1d = zip [0 :: Int ..] grid
+
+      doubleSingleTuple a1 b c = ((a1, b), c)
+      enumerate1dto2d :: Int -> [a] -> [((Int, Int), a)]
+      enumerate1dto2d i = zipWith3 doubleSingleTuple (repeat i) [0 :: Int ..]
+   in uncurry enumerate1dto2d <$> enumerated1d
+
+nextGrid :: forall a. (CellularAutomata a, Ord a) => State a -> State a
 nextGrid state =
-  let singleDoubleTuple a b c = ((a, b), c)
-      enumeratedGrid = (\(i, xs) -> zipWith3 singleDoubleTuple (repeat i) [0 :: Int ..] xs) <$> zip [0 :: Int ..] (getGrid state)
+  let enumeratedGrid = enumerate2d $ getGrid state
+
+      newGrid :: [[a]]
       newGrid =
         (fmap . fmap)
           ( \(coords, value) ->
@@ -31,24 +43,17 @@ nextGrid state =
 countNeighbors :: (Ord a) => (Int, Int) -> Grid a -> Map a Int
 countNeighbors (x, y) board =
   let neighborCoords =
-        [ let (neighborX, neighborY) = (x + x', y + y')
-           in ( circularValue
-                  neighborX
-                  0
-                  (length board - 1),
-                circularValue
-                  neighborY
-                  0
-                  (length (head board) - 1)
-              )
-          | x' <- [-1 .. 1 :: Int],
-            y' <- [-1 .. 1 :: Int],
-            x' /= 0 || y' /= 0
+        [ ( circularValue (x + dx) 0 (length board - 1),
+            circularValue (y + dy) 0 (length (head board) - 1)
+          )
+          | dx <- [-1 .. 1 :: Int],
+            dy <- [-1 .. 1 :: Int],
+            dx /= 0 || dy /= 0
         ]
 
-      circularValue n small large
-        | n < small = large
-        | n > large = small
+      circularValue n bottom top
+        | n < bottom = top
+        | n > top = bottom
         | otherwise = n
 
       insertToMapOrIncrement :: (Ord a) => Map a Int -> a -> Map a Int
