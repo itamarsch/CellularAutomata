@@ -27,6 +27,7 @@ library
   exposed-modules:
       CellularAutomata
       CellularAutomata.BriansBrain
+      CellularAutomata.DayAndNight
       CellularAutomata.GameOfLife
       CellularAutomata.Seeds
       Drawing

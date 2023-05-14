@@ -1,7 +1,7 @@
 module Main (main) where
 
 import CellularAutomata (CellularAutomata (..))
-import CellularAutomata.Seeds (Seeds)
+import CellularAutomata.DayAndNight (DayAndNight)
 import Control.Monad (join)
 import Data.Bifunctor (Bifunctor (bimap))
 import Data.List.Index (modifyAt)
@@ -38,7 +38,7 @@ periodic _ state
   | otherwise = state
 
 main :: IO ()
-main = play (InWindow "Cellular" (both float2Int screenDimensions) (0, 0)) black fps (initialState :: State Seeds) view event periodic
+main = play (InWindow "Cellular" (both float2Int screenDimensions) (0, 0)) black fps (initialState :: State DayAndNight) view event periodic
 
 both :: (a -> b) -> (a, a) -> (b, b)
 both = join bimap
