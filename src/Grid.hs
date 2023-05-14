@@ -4,6 +4,7 @@
 module Grid (nextGrid, countNeighbors, Grid, State (..)) where
 
 import CellularAutomata (CellularAutomata (..))
+import Control.Monad ((<$!>))
 import Data.Foldable (foldl')
 import Data.Map.Strict (Map, alter, empty, (!), (!?))
 import Data.Maybe (fromMaybe)
@@ -31,7 +32,7 @@ nextGrid state =
 
       newGrid :: [[a]]
       newGrid =
-        (fmap . fmap)
+        ((<$!>) . (<$!>))
           ( \(coords, value) ->
               let neighbors = countNeighbors coords $ getGrid state
                   (lookupTable, defaultNext) = lookupNextStep ! value
